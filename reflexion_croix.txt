@@ -1,0 +1,24 @@
+quand je creai lalgO qui me permet de resoudre la croix blanche jai reflecjei comme suit
+dans le cube un millieu na que 4 emplecement soit en haut dune face a droite dune face a gauche dune face ou en bas dune face cest a dire
+         X1X
+         2X3
+         X4X   <---- representation
+donc je coderai des condition qui vont resoudre pour totu ces 24 cas
+jai considerer la face verte comme celle de en face
+
+les different defi au quelle jai du faire face dans la realisation de ce projet etait de un
+comprendre en profondeur le rubicks cube faire un systeme de representation fiable
+faire une correspondance entre mon code et la realiter
+trouver la meilleur algorythme possible pour le projet
+et coder un systme de mouement du cube
+
+
+chech list:
+movement
+cross white
+perfect cross
+white corners
+second floor
+yellow cross
+placment
+orientation
