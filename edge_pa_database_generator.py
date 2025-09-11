@@ -14,12 +14,55 @@ def list_to_string(two_d_list):
     P+=1
     return " ".join([item for sublist in two_d_list for item in sublist])
 """import the tools that I need """
-cube =np.array([
-    ['W'] * 9, ['R'] * 9, ['B'] * 9, ['O'] * 9, ['G'] * 9, ['Y'] * 9])
+cube = [
+    ['W', 'W', 'W',
+     'W', 'W', 'W',
+     'W', 'W', 'W'],  # Face blanche
 
-goal = np.array([
-    ['W']*9, ['R']*9, ['B']*9, ['O']*9, ['G']*9, ['Y']*9
-])
+    ['R', 'R', 'R',
+     'R', 'R', 'R',
+     'R', 'R', 'R'],  # Face rouge
+
+    ['B', 'B', 'B',
+     'B', 'B', 'B',
+     'B', 'B', 'B'],  # Face bleue
+
+    ['O', 'O', 'O',
+     'O', 'O', 'O',
+     'O', 'O', 'O'],  # Face orange
+
+    ['G', 'G', 'G',
+     'G', 'G', 'G',
+     'G', 'G', 'G'],  # Face verte
+
+    ['Y', 'Y', 'Y',
+     'Y', 'Y', 'Y',
+     'Y', 'Y', 'Y']]  # Face jaune
+goal =  [
+    ['W', 'W', 'W',
+     'W', 'W', 'W',
+     'W', 'W', 'W'],  # Face blanche
+
+    ['R', 'R', 'R',
+     'R', 'R', 'R',
+     'R', 'R', 'R'],  # Face rouge
+
+    ['B', 'B', 'B',
+     'B', 'B', 'B',
+     'B', 'B', 'B'],  # Face bleue
+
+    ['O', 'O', 'O',
+     'O', 'O', 'O',
+     'O', 'O', 'O'],  # Face orange
+
+    ['G', 'G', 'G',
+     'G', 'G', 'G',
+     'G', 'G', 'G'],  # Face verte
+
+    ['Y', 'Y', 'Y',
+     'Y', 'Y', 'Y',
+     'Y', 'Y', 'Y']]  # Face jaune
+
 def rotate_face_clockwise(face,face_index):
     face = np.array(face)
     cube[face_index]=np.rot90(face.reshape(3, 3), 1).flatten()
@@ -280,7 +323,7 @@ edge_coordinate_list=((0,0,1),(0,1,0),(0,1,2),(0,2,1),
                        (1,0,0),(1,0,2),(1,2,0),(1,2,2),
                        (2,0,1),(2,1,0),(2,1,2),(2,2,1))
 """looking for the solution of one cubie """
-original_cube = np.copy(cube)  # Place this before the loop
+original_cube = copy.deepcopy(cube)  # Place this before the lneoop
 process_completion_percentage=0
 for coordinate in edge_coordinate_list:
     process_completion_percentage+=1/12
@@ -292,7 +335,7 @@ for coordinate in edge_coordinate_list:
                     # switching to a new cubie each time
                     threshold = 0
                     open_state.clear()
-                    cube=np.copy(original_cube)  # Reset the cube for each corner
+                    cube=copy.deepcopy(original_cube)  # Reset the cube for each corner
                     cube3D = convert_to_3D_format(cube)
                     switch_corner(cube3D, coordinate[0], coordinate[1], coordinate[2], x, y, z)
                     # loop to change corner orientation at a position
@@ -341,4 +384,3 @@ print("bellow is the database with the solution to every single edge position an
 print(edge_dic)
 print("number of element in the data base :",edge_dic.__len__())
 print("---------------------------------------------------------------------------------------------------------------------------------")
-

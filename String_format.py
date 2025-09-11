@@ -87,37 +87,3 @@ def move_LL(cube):
     cube[0], cube[3], cube[6], cube[45], cube[48], cube[51] = cube[45], cube[48], cube[51], cube[0], cube[3], cube[6]
     cube[20], cube[23], cube[26], cube[36], cube[39], cube[42] = cube[42], cube[39], cube[36], cube[26], cube[23], cube[20]
     cube[27:36] = [cube[35], cube[34], cube[33],cube[32], cube[31], cube[30],cube[29], cube[28], cube[27]]
-
-
-
-def convert_to_3D_format(cube):
-
-    return  (
-        (cube[0], cube[27], cube[20],0)          #index 0 corner
-        ,(cube[30], cube[23],1),                 #index 1 edge
-        (cube[33], cube[26], cube[51],2),        #index 2 corner
-        (cube[1], cube[19],3),                   #index 3 edge
-        None,                                  #index 4
-        (cube[25], cube[52],5),                  #index 5 edge
-        (cube[2], cube[11], cube[18],6),         #index 6 corner
-        (cube[14], cube[21],7),                  #index 7 edge
-        (cube[17], cube[24], cube[53],8),        #index 8 corner
-        (cube[3], cube[28],9)                    #index 9 edge
-        ,None,                                 #index 10
-        (cube[34], cube[48],11),                  #index 11 edge
-        None,                                  #index 12
-        None,                                  #index 13
-        None,                                  #index 14
-        (cube[5], cube[10],15)                    #index 15 edge
-        ,None,                                 #index 16
-        (cube[16], cube[50],17)                   #index 17 edge
-        ,(cube[6], cube[36], cube[29],18),        #index 18 corner
-        (cube[39], cube[32],19),                  #index 19 edge
-        (cube[42], cube[35], cube[45],20),        #index 20 corner
-        (cube[7], cube[37],21)                    #index 21 edge
-        ,None,                                 #index 22
-        (cube[43], cube[46],23),                  #index 23 edge
-        (cube[8], cube[38], cube[9],24),          #index 24 corner
-        (cube[41], cube[12],25)                   #index 25 edge
-        ,(cube[44], cube[15], cube[47],26)        #index 26 corner
-    )
