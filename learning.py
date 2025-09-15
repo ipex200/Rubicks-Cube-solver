@@ -91,7 +91,13 @@ def get_f_scores(threshold,cube,pre_open,open_state,face_classification):
                 f = g + h
 
                 if f <= threshold:
-                    pre_open.append((move_set[x],f,current_cube_as_string,g))
+                    if open_state:
+                        previous_moves = open_state[0][4]
+                        new_moves = previous_moves + [move_set[x].__name__]
+                    else:
+                        new_moves = [move_set[x].__name__]
+                    pre_open.append((move_set[x], f, current_cube_as_string, g, new_moves.copy()))
+
                 before.add(current_cube_as_string)
                     # Annuler le mouvement
             cube=reset.copy()
@@ -101,17 +107,12 @@ def get_f_scores(threshold,cube,pre_open,open_state,face_classification):
 move_D2(cube)
 move_U1(cube)
 move_B1(cube)
-move_L2(cube)
-move_R1(cube)
-move_F2(cube)
-move_RR(cube)
-move_L1(cube)
-move_D2(cube)
 print_cube(cube)
 start= cube.copy()
 list_time= 0
 #lalgo trouve la solution avec f1/F2 / D1/ D2 / R1/R2/L1/L2/ quand on utilise quatre move
 """algorythm"""
+print("-----ida star-----")
 while continue_algo:
     global threshold
     before.clear()
@@ -121,7 +122,7 @@ while continue_algo:
     # we handle the case for the first iteration
     if iteration == 1:
         threshold= heuristic(bytes(cube))
-
+        print("iteration # 1","threshold:",threshold)
         get_f_scores(threshold,cube,pre_open,open_state,face_classification)
         open_state.extendleft(pre_open)
         #we check each node under the threshold
@@ -131,6 +132,7 @@ while continue_algo:
             cube =bytearray(open_state[0][2])
             # we check if this is the solution and if yes we break the loop
             if cube == goal:
+                print("solution:", open_state[0][4])
                 continue_algo = 0
                 break
 
@@ -140,7 +142,7 @@ while continue_algo:
             open_state.extendleft(pre_open)
         #in this case if open state is empty the line of code wont just be readed and it will go to the next iteration
 
-        continue
+
     #now we handle the case for the other iterationw
     else:
         cube= start.copy()
@@ -156,8 +158,10 @@ while continue_algo:
             list_time += 1
             cube=bytearray(open_state[0][2])
             # we check if this is the solution and if yes we break the loop
-            if cube == goal:
+            if bytes(cube) == bytes(goal):
                 continue_algo = 0
+                print("solution:", open_state[0][4])
+
                 break
 
             # if its not we explore the children and we remove the one that we just visited to avoid repetition
