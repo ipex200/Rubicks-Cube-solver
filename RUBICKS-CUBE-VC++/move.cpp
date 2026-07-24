@@ -48,7 +48,6 @@ void move_D1(cube_type& cube){
 
     cube[45]= temp_face[0];cube[46]=temp_face[1] ;cube[47]= temp_face[2];cube[48]= temp_face[3];cube[49]=temp_face[4] ;cube[50]= temp_face[5];cube[51]= temp_face[6];cube[52]= temp_face[7];cube[53] = temp_face[8];
 }
-//je me suis arreter ici hier demain tu dois commencer par D2 etsuprimer ce commentaire
 void move_D2(cube_type& cube){
     temp_side={cube[33], cube[34], cube[35], cube[42], cube[43], cube[44], cube[15], cube[16], cube[17], cube[24], cube[25], cube[26]};
     temp_face={cube[47], cube[50], cube[53],cube[46], cube[49], cube[52],cube[45], cube[48], cube[51]};
@@ -162,37 +161,7 @@ void move_LL(cube_type& cube){
     cube[20]=temp_side[6]; cube[23]=temp_side[7]; cube[26]=temp_side[8]; cube[36]=temp_side[9]; cube[39]=temp_side[10]; cube[42]=temp_side[11];
     cube[27]=temp_face[0]; cube[28]=temp_face[1]; cube[29]=temp_face[2];cube[30]=temp_face[3]; cube[31]=temp_face[4]; cube[32]=temp_face[5];cube[33]=temp_face[6]; cube[34]=temp_face[7]; cube[35]=temp_face[8];   
  }
-void hash_cube(const cube_type& cube ,std::array<int,27>& hash_container){
-    hash_container ={
-    cube[0]*19683+ cube[27]*729+ cube[20]*27,     //index 0 corner
-    cube[30]*729+cube[23]*27+1,                   //index 1 edge
-    cube[33]*19683+ cube[26]*729+cube[51]*27+2,   //index 2 corner
-    cube[1]*729+ cube[19]*27+3,                   //index 3 edge
-    0,                                            //index 4
-    cube[25]*729+ cube[52]*27+5,                  //index 5 edge
-    cube[2]*19683+ cube[11]*729+ cube[18]*27+6,   //index 6 corner
-    cube[14]*729+ cube[21]*27+7,                  //index 7 edge
-    cube[17]*19683+ cube[24]*729+cube[53]*27+8,   //index 8 corner
-    cube[3]*729+ cube[28]*27+9,                   //index 9 edge
-    0,                                            //index 10
-    cube[34]*729+ cube[48]*27+11,                 //index 11 edge
-    0,                                            //index 12
-    0,                                            //index 13
-    0,                                            //index 14
-    cube[5]*729+ cube[10]*27+15,                  //index 15 edge
-    0,                                            //index 16
-    cube[16]*729+ cube[50]*27+17,                 //index 17 edge
-    cube[6]*19683+ cube[36]*729+cube[29]*27+18,   //index 18 corner
-    cube[39]*729+ cube[32]*27+19,                 //index 19 edge
-    cube[42]*19683+ cube[35]*729+cube[45]*27+20,  //index 20 corner
-    cube[7]*729+ cube[37]*27+21,                  //index 21 edge
-    0,                                            //index 22
-    cube[43]*729+ cube[46]*27+23,                 //index 23 edge
-    cube[8]*19683+ cube[38]*729+  cube[9]*27+24,  //index 24 corner
-    cube[41]*729+ cube[12]*27+25,                 //index 25 edge
-    cube[44]*19683+cube[15]*729+cube[47]*27+26};   //index 26 corner
-    
-}
+
 std::unordered_map<MoveFunc, std::string> funcNames = {
     {move_U1, "move_U1"},
     {move_U2, "move_U2"},
@@ -234,5 +203,68 @@ std::unordered_map<MoveFunc, std::vector<MoveFunc>> allowedMovesMap{
     {move_L1, {move_U1, move_U2, move_UU,move_DD, move_D1, move_D2,move_B1, move_B2, move_BB,move_FF, move_F1, move_F2,move_RR, move_R1, move_R2}},
     {move_L2, {move_U1, move_U2, move_UU,move_DD, move_D1, move_D2,move_B1, move_B2, move_BB,move_FF, move_F1, move_F2,move_RR, move_R1, move_R2}},
     {move_LL,{move_U1, move_U2, move_UU,move_DD, move_D1, move_D2,move_B1, move_B2, move_BB,move_FF, move_F1, move_F2,move_RR, move_R1, move_R2}},
+
+};
+std::unordered_map<MoveFunc, char> map_move_to_number{
+    {move_U1,0},
+    {move_U2,1},
+    {move_UU,2},
+    {move_D1,3},
+    {move_D2,4},
+    {move_DD,5},
+    {move_F1,6},
+    {move_F2,7},
+    {move_FF,8},
+    {move_B1,9},
+    {move_B2,10},
+    {move_BB,11},
+    {move_R1,12},
+    {move_R2,13},
+    {move_RR,14},
+    {move_L1,15},
+    {move_L2,16},
+    {move_LL,17},
+
+};
+std::unordered_map<char, std::string> map_number_to_move_name{
+    {0,"move_U1"},
+    {1,"move_U2"},
+    {2,"move_UU"},
+    {3,"move_D1"},
+    {4,"move_D2"},
+    {5,"move_DD"},
+    {6,"move_F1"},
+    {7,"move_F2"},
+    {8,"move_FF"},
+    {9,"move_B1"},
+    {10,"move_B2"},
+    {11,"move_BB"},
+    {12,"move_R1"},
+    {13,"move_R2"},
+    {14,"move_RR"},
+    {15,"move_L1"},
+    {16,"move_L2"},
+    {17,"move_LL"},
+
+};
+std::unordered_map<char, MoveFunc> map_number_to_move{
+    {0,move_U1},
+    {1,move_U2},
+    {2,move_UU},
+    {3,move_D1},
+    {4,move_D2},
+    {5,move_DD},
+    {6,move_F1},
+    {7,move_F2},
+    {8,move_FF},
+    {9,move_B1},
+    {10,move_B2},
+    {11,move_BB},
+    {12,move_R1},
+    {13,move_R2},
+    {14,move_RR},
+    {15,move_L1},
+    {16,move_L2},
+    {17,move_LL},
 
 };

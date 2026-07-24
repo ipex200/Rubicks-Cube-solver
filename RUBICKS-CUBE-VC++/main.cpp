@@ -27,7 +27,8 @@ struct Node {
     MoveFunc move;   // function pointer
     float f;         // f-score
     cube_type cube;  // cube state
-    int g;           // g-score
+    int g;              // g-score
+    std::vector<char> path_to_node ;  //path to current node  
 };
 
 std::array<unsigned char, 54> cube = {0,0,0,0,0,0,0,0,0 ,1,1,1,1,1,1,1,1,1, 2,2,2,2,2,2,2,2,2,
@@ -39,19 +40,17 @@ std::array<int,27> hashed_cube;
 void(*previous_move)(cube_type&) ;
 std::string previous_move_name;
 std::stack<Node> open_state;
+std::vector<char> path_to_node;
 std::vector<Node> pre_open; // change this line later
 std::array<MoveFunc, 18> move_set = {move_U1, move_R1, move_B1, move_L1, move_D1, move_F1,
                                       move_U2, move_R2, move_B2, move_L2, move_D2, move_F2,
                                       move_UU, move_DD, move_LL, move_RR, move_FF, move_BB};
-
+std::vector<std::string> path_to_solution;
+    
 // Precomputed move lists
 
 std::unordered_map<MoveFunc, int> moveTypeMap;
 std::unordered_set<cube_type, CubeHash> before; // use unordered_set with hash
-std::unordered_map<std::string, int> face_classification = 
-                {{"move_B1", 1}, {"move_B2", 1}, {"move_BB", 1}, {"move_U1", 2}, {"move_U2", 2}, {"move_UU", 2},
-                 {"move_D1", 1}, {"move_D2", 1}, {"move_DD", 1}, {"move_F1", 2}, {"move_F2", 2}, {"move_FF", 2},
-                 {"move_L1", 1}, {"move_L2", 1}, {"move_LL", 1}, {"move_R1", 2}, {"move_R2", 2},  {"move_RR", 2}};
 
 bool continue_algo = true;
 
@@ -78,7 +77,7 @@ inline float heuristic(cube_type& cube) {
     std::chrono::duration<double, std::micro> elapsed = end - start;
     htime += elapsed.count();
     
-    return total_distance_edge/4+total_distance_corner;
+    return total_distance_edge/4+total_distance_corner/4;
 
 }
     
@@ -86,7 +85,7 @@ inline float heuristic(cube_type& cube) {
 
 long long total_get_f_scores_time = 0;
 
-void get_f_scores(float& threshold, cube_type& cube, std::vector<Node>& pre_open, std::stack<Node>& open_state, std::unordered_map<std::string, int>& face_classification, char& g, void(*previous_move)(cube_type&)) {
+void get_f_scores(float& threshold, cube_type& cube, std::vector<Node>& pre_open, std::stack<Node>& open_state , char& g, void(*previous_move)(cube_type&)) {
     auto start = std::chrono::high_resolution_clock::now();
     pre_open.clear();
     
@@ -116,7 +115,11 @@ void get_f_scores(float& threshold, cube_type& cube, std::vector<Node>& pre_open
             float h = heuristic(cube);
             float f = g + h;
             if (f <= threshold) {
-                pre_open.push_back(Node{move, f, cube, g});
+                path_to_node = open_state.empty() ? std::vector<char>() : open_state.top().path_to_node;
+                path_to_node.push_back(map_move_to_number[move]);
+                pre_open.push_back(Node{move, f, cube, g,path_to_node});
+                path_to_node.clear();
+
             }
             before.insert(cube);
         }
@@ -143,7 +146,6 @@ before.reserve(500'000);
     move_RR(cube);
     move_L1(cube);
     move_U1(cube);
-    move_F1(cube);
     auto start_cube = cube;
 
     while (continue_algo) {
@@ -152,7 +154,7 @@ before.reserve(500'000);
         if (iteration == 1) {
             threshold = heuristic(cube);
             std::cout << "iteration: " << iteration << " threshold: " << threshold << std::endl;
-            get_f_scores(threshold, cube, pre_open, open_state, face_classification, g, previous_move);
+            get_f_scores(threshold, cube, pre_open, open_state , g, previous_move);
             for (const Node& element : pre_open) {
                 open_state.push(element);
             }
@@ -162,7 +164,7 @@ before.reserve(500'000);
                     continue_algo = false;
                     break;
                 }
-                get_f_scores(threshold, cube, pre_open, open_state, face_classification, g, previous_move);
+                get_f_scores(threshold, cube, pre_open, open_state , g, previous_move);
                 open_state.pop();
                 for (const Node& element : pre_open) {
                     open_state.push(element);
@@ -172,7 +174,7 @@ before.reserve(500'000);
             cube = start_cube;
             threshold += 0.25;
             std::cout << "iteration: " << iteration << " threshold: " << threshold << std::endl;
-            get_f_scores(threshold, cube, pre_open, open_state, face_classification, g, previous_move);
+            get_f_scores(threshold, cube, pre_open, open_state , g, previous_move);
             for (const Node& element : pre_open) {
                 open_state.push(element);
             }
@@ -180,9 +182,12 @@ before.reserve(500'000);
                 cube = open_state.top().cube;
                 if (cube == goal) {
                     continue_algo = false;
+                    path_to_solution.clear();
+                    for (char numbers : open_state.top().path_to_node) {
+                        path_to_solution.push_back(map_number_to_move_name[numbers]);}
                     break;
                 }
-                get_f_scores(threshold, cube, pre_open, open_state, face_classification, g, previous_move);
+                get_f_scores(threshold, cube, pre_open, open_state, g, previous_move);
                 open_state.pop();
                 for (const Node& element : pre_open) {
                     open_state.push(element);
@@ -197,6 +202,11 @@ before.reserve(500'000);
     std::cout << "------program execution time: " << duration << " micro seconds ------" << std::endl;
     std::cout << "---get_fscore execution time: " << total_get_f_scores_time << " micro second ---" << std::endl;
     std::cout << "----heuristic execution time: " << htime << " micro second ----" << std::endl;
-
+    std::cout << "---- the solution is : ";
+    for (const auto& move_name : path_to_solution) {
+        std::cout << 
+        move_name<<" "  ;
+    
+    }
     return 0;
 }
